@@ -53,6 +53,7 @@ TemplateVariables = TypedDict(
         "raw_name": str,
         "raw_relpath": str,
         "cd?": str,
+        "version?": str,
         "sub?": str,
         "content_type": str,
         "mosaic?": str,
@@ -328,6 +329,19 @@ def _build_variables(
         cd = file_info.cd
     prefix, suffix = split_number(metadata.number) if metadata.number else ("", "")
 
+    # An unnumbered RJ video may be a distinct cut. Keep its source name rather
+    # than silently treating every video of the product as the same file.
+    # Strip our own prefix so refreshing an organized file is idempotent.
+    version = ""
+    if str(metadata.content_type) == "doujin" and cd is None and raw_name:
+        label = re.sub(r"(?i)^" + re.escape(metadata.number) + r"(?:\s+-\s+)?", "", raw_name).strip()
+        # The template renders the subtitle phase separately from version identity.
+        # Remove its existing trailing marker when refreshing an organized file.
+        if file_info is not None and file_info.has_subtitle:
+            label = re.sub(r"(?i)-C$", "", label).strip()
+        if label:
+            version = " - " + label
+
     return {
         "number": metadata.number,
         "prefix": prefix,
@@ -347,6 +361,7 @@ def _build_variables(
         "raw_name": raw_name,
         "raw_relpath": _relpath_or_empty(source_path, library_root),
         "cd?": str(cd) if cd is not None else "",
+        "version?": version,
         "sub?": "C" if file_info is not None and file_info.has_subtitle else "",
         "content_type": str(metadata.content_type),
         "mosaic?": str(nature)

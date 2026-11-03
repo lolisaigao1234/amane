@@ -40,7 +40,9 @@ from .sites import (
     ThePornDBCrawler,
     XCityCrawler,
 )
+from .sites.dlsite import DlsiteCrawler
 
+registry.register(DlsiteCrawler)
 registry.register(JavDBCrawler)
 registry.register(DmmCrawler)
 registry.register(JavBusCrawler)
