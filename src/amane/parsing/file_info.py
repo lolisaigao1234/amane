@@ -31,6 +31,7 @@ class ContentType(StrEnum):
     FC2 = "fc2"
     AMATEUR = "amateur"
     HENTAI = "hentai"
+    DOUJIN = "doujin"
 
 
 class Mosaic(StrEnum):
@@ -280,7 +281,8 @@ def parse_file_info(
         stem = p.stem
         dirs = _dir_names(p)
         number, content_type = _identify(stem.strip(), dirs, escape, fallback=True)
-        content_type = _classify_from_path(stem, dirs) or content_type
+        if content_type != ContentType.DOUJIN:
+            content_type = _classify_from_path(stem, dirs) or content_type
         basename = stem.upper()
         cd = _detect_cd(basename)
         if cd is None and dirs:
@@ -469,6 +471,10 @@ def _identify(
     fallback: bool,
 ) -> tuple[str | None, ContentType]:
     """文件名 → 父目录 (目录不用过宽拼接) → 可选的文件名回退."""
+    # Explicit DLsite IDs take precedence over generic catalog guesses, including parents.
+    for name in (stem, *reversed(dirs)):
+        if m := re.search(r"(?i)(?<![A-Z0-9])RJ\d{6,8}(?![A-Z0-9])", name):
+            return m.group().upper(), ContentType.DOUJIN
     if found := _match(stem, escape, generic=True):
         return found
     for name in reversed(dirs):

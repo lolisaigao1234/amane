@@ -21,6 +21,11 @@ CrawlerFactory (缓存实例)
 - gFriends 额外依赖 `data_dir` (Filetree 缓存) 与 `actor_scraping.gfriends_repo`.
 - **能力声明**位于 `CrawlerProfile`: 演员爬虫必须显式给出 `capabilities` (`ACTOR_PROFILE` / `ACTOR_IMAGE`) 与 `genders`; 影片爬虫空 `capabilities` 视为 `film_metadata`. 行为开关一律写在 `traits` (取值见 `SourceTrait`), 与「来源提供什么」分开: `needs_partial` 表示依赖前序聚合结果, 排在第二段执行; `multi_language` 表示消费 `FetchOptions.language`; `uses_file_hash` 表示刮削前需要文件指纹 (扫描不读取文件内容). `site_roles` 只从两个注册表推导配置 schema 用的站点列表 (档案序 = 注册序); 聚合引擎只对声明 `multi_language` 的站点展开 `(site, lang)` 节点. Handler 按 `Actor.gender` 对 `profile().genders` 裁站, 见 [task-system.md](task-system.md). 影片来源的这些声明经 `CrawlerProfile.to_descriptor()` 进入来源目录, 刮削只读目录, 不读实例的 profile; 演员来源不进入目录.
 
+DLsite 使用 `dlsite_async.DlsiteAPI.get_work` 解析 RJ 视频元数据,
+`sites/dlsite.py::_AmaneAPI` 将请求交给共享 `HttpClient`, 不创建独立会话.
+`doujin` 内容类型只路由至 DLsite; 非视频作品和查询失败保持结构化错误,
+不回退至通用 JAV 来源.
+
 ## 影片出演者
 
 `MediaMetadata.actors` 是 `list[FilmActor]` (`name` + `gender`); 站点级 raw 快照与旧形态经 validator 收成 `gender=unknown`. 名单语义能判定性别时爬虫必须写出 `female` / `male`, 栏位无法判定则保持 `unknown`. 聚合锁定与落库填空见 [data-model.md](data-model.md).

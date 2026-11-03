@@ -9,6 +9,7 @@ description = "Amane — media metadata management service"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "dlsite-async==0.11.2",
     "aiofiles>=25.1.0",
     "aiolimiter>=1.2.1",
     "croniter>=2.0.0",

@@ -107,6 +107,7 @@ _DEFAULT_CONTENT_ROUTES: dict[ContentType, list[SiteName]] = {
         SiteName.JAVDB,
         SiteName.FREEJAVBT,
     ],
+    ContentType.DOUJIN: [SiteName.DLSITE],
     ContentType.HENTAI: [
         SiteName.GETCHU,
         SiteName.DMM,

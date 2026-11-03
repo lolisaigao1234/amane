@@ -9,6 +9,7 @@ class SiteName(StrEnum):
     AVSOX = "avsox"
     DAHLIA = "dahlia"
     DMM = "dmm"
+    DLSITE = "dlsite"
     FALENO = "faleno"
     FC2 = "fc2"
     FC2CLUB = "fc2club"

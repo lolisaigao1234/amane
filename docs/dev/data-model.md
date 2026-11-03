@@ -174,3 +174,5 @@ PATCH 三态: **省略键** = 不更新 (`exclude_unset`); **显式值** = 写�
 ## 用户注解 (与爬取隔离)
 
 `UserTag` 经 `MetadataUserTag` / `ActorUserTag` 分别挂载到影片与演员, 两张关联表结构相同、均不保序; `Comment` 绑定于 Metadata. 挂载与卸载都只经批量端点, 语义见 [api.md](api.md). `FacetKind.USER_TAG` 的 count 恒为**关联 Metadata 数**, 演员挂载不参与 (与其它分类的 count 口径一致). 刮削路径**绝不触碰**这些表.
+
+RJ 视频的 `{version?}` 保留独立版本的源名称; 整理后的番号前缀和字幕尾标不参与版本标识, 重复整理保持路径稳定. 显式 CD 分片继续使用分片字段.
